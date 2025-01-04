@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .container {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  #plot {
+    border: 1px solid #ddd;
+    margin: 20px 0;
+  }
+  .controls {
+    margin-bottom: 20px;
+  }
+  button {
+    padding: 8px 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #45a049;
+  }
+  .stats {
+    margin-top: 10px;
+    font-family: monospace;
+  }

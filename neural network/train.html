@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+  <div class="network-container">
+    <h2 style="text-align: center;">Réseau : Input → [3 "Analysis" Nodes] → Output</h2>
+    
+    <div class="network" id="network">
+      <!-- Couche d'Entrée -->
+      <div class="layer">
+        <div class="layer-title">Entrées</div>
+        <div class="neuron" data-name="input1">
+          Action
+          <div class="neuron-value">0</div>
+        </div>
+        <div class="neuron" data-name="input2">
+          Comedy
+          <div class="neuron-value">0</div>
+        </div>
+        <div class="neuron" data-name="input3">
+          Duration
+          <div class="neuron-value">0</div>
+        </div>
+      </div>
+
+      <!-- Couche Cachée (3 neurones) -->
+      <div class="layer">
+        <div class="layer-title">Analyse</div>
+
+        <!-- Node 1: Action+Comedy -->
+        <div class="neuron" data-name="h1_1">
+          <div>Action + <br>Comedy</div>
+          <div class="bias-label" id="bias-h1_1">b=0.1</div>
+          <div class="weights-box" id="weights-h1_1">
+            <div>i1→h1_1: <span id="w_00_text"></span></div>
+            <div>i2→h1_1: <span id="w_10_text"></span></div>
+            <div>i3→h1_1: <span id="w_20_text"></span></div>
+          </div>
+          <div class="neuron-value">...</div>
+        </div>
+
+        <!-- Node 2: Comedy+Duration -->
+        <div class="neuron" data-name="h1_2">
+          <div>Comedy + <br>Duration</div>
+          <div class="bias-label" id="bias-h1_2">b=0.1</div>
+          <div class="weights-box" id="weights-h1_2">
+            <div>i1→h1_2: <span id="w_01_text"></span></div>
+            <div>i2→h1_2: <span id="w_11_text"></span></div>
+            <div>i3→h1_2: <span id="w_21_text"></span></div>
+          </div>
+          <div class="neuron-value">...</div>
+        </div>
+
+        <!-- Node 3: "Secret Sauce" (all 3) -->
+        <div class="neuron" data-name="h1_3">
+          Secret <br>Sauce
+          <div class="bias-label" id="bias-h1_3">b=0.1</div>
+          <div class="weights-box" id="weights-h1_3">
+            <div>i1→h1_3: <span id="w_02_text"></span></div>
+            <div>i2→h1_3: <span id="w_12_text"></span></div>
+            <div>i3→h1_3: <span id="w_22_text"></span></div>
+          </div>
+          <div class="neuron-value">...</div>
+        </div>
+      </div>
+
+      <!-- Couche de Sortie (1 neurone) -->
+      <div class="layer">
+        <div class="layer-title">Sortie</div>
+        <div class="neuron" data-name="output">
+          Reco
+          <div class="bias-label" id="bias-out">b=0.1</div>
+          <div class="weights-box" id="weights-out">
+            <div>h1_1→out: <span id="w_h1_1_out"></span></div>
+            <div>h1_2→out: <span id="w_h1_2_out"></span></div>
+            <div>h1_3→out: <span id="w_h1_3_out"></span></div>
+          </div>
+          <div class="neuron-value">...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button onclick="trainOneStep()">Étape suivante</button>
+      <!-- This button will skip 10% of total epochs in dataset steps -->
+      <button onclick="skipTenPercent()">Sauter 10% d&apos;époques</button>
+      <!-- Train everything at once -->
+      <button onclick="trainAll()">Tout entraîner</button>
+      <button onclick="reinitialiser()">Recommencer</button>
+    </div>
+
+    <div class="explanation" id="explanation">
+      <strong>Explication :</strong><br>
+      • <em>Node 1</em> = Action + Comedy, <em>Node 2</em> = Comedy + Duration, <em>Node 3</em> = all inputs.<br>
+      • maxEpochs = 200, learningRate = 0.5.<br>
+      Cliquez sur « Étape suivante » ou « Sauter 10% d&apos;époques » ou « Tout entraîner ».
+    </div>
+
+    <!-- Copyable weights section -->
+    <div class="copy-section" id="copyable-weights"></div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

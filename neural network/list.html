@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Neural Network Inference Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 20px;
+      background: #f6f8fa;
+      color: #24292e;
+    }
+    h1 {
+      text-align: center;
+    }
+    .movies-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+    }
+    .movie-card {
+      background: white;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      width: 220px;
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    }
+    .movie-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .movie-attributes {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+    .movie-score {
+      font-weight: 600;
+      font-size: 16px;
+      color: #0969da;
+    }
+    .refresh-button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      background: #1f6feb;
+      color: #fff;
+      cursor: pointer;
+    }
+    .refresh-button:hover {
+      background: #0969da;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Neural Network Inference: Movie Recommendations</h1>
+
+<div class="movies-container" id="moviesContainer">
+  <!-- Movie cards will be inserted here -->
+</div>
+
+<button class="refresh-button" onclick="runInference()">Recalculate Scores</button>
+
+<script>
+// =====================
+// 1) CONFIGURE NETWORK
+// =====================
+// Example values (paste your trained model here!):
+// These might come from your final training copy, e.g. 
+// w_input_h1 = [ [0.35, 0.10, 0.27], [0.22, 0.40, 0.58], [0.02, 0.66, 0.76] ];
+// b_h1 = [0.15, 0.12, 0.07];
+// w_h1_out = [ [0.30], [0.44], [0.56] ];
+// b_out = [0.18];
+
+w_input_h1 = [
+[0.54, 0.19, 0.18],
+[-0.04, 0.11, 0.13],
+[-0.47, 0.34, 0.36]
+];
+b_h1 = [-0.93, -0.51, -0.52];
+w_h1_out = [
+[1.37],
+[0.71],
+[0.70]
+];
+b_out = [-1.62];
+
+// Sigmoid activation for the hidden & output
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
+}
+
+// Forward pass: 3 inputs -> 3 hidden -> 1 output
+function forwardPass(action, comedy, duration) {
+  // Hidden node 1
+  const h1_1_in = (action * w_input_h1[0][0]) + (comedy * w_input_h1[1][0]) + (duration * w_input_h1[2][0]) + b_h1[0];
+  const h1_1_out = sigmoid(h1_1_in);
+
+  // Hidden node 2
+  const h1_2_in = (action * w_input_h1[0][1]) + (comedy * w_input_h1[1][1]) + (duration * w_input_h1[2][1]) + b_h1[1];
+  const h1_2_out = sigmoid(h1_2_in);
+
+  // Hidden node 3
+  const h1_3_in = (action * w_input_h1[0][2]) + (comedy * w_input_h1[1][2]) + (duration * w_input_h1[2][2]) + b_h1[2];
+  const h1_3_out = sigmoid(h1_3_in);
+
+  // Output
+  const out_in = (h1_1_out * w_h1_out[0][0])
+               + (h1_2_out * w_h1_out[1][0])
+               + (h1_3_out * w_h1_out[2][0])
+               + b_out[0];
+  const out = sigmoid(out_in);
+
+  return out; // final recommendation score, e.g. 0..1
+}
+
+// ==================
+// 2) LIST OF MOVIES
+// ==================
+let movies = [
+  { name: "Action Blast",  action: 7, comedy: 3, duration: 2 },
+  { name: "Funny Times",   action: 2, comedy: 9, duration: 1 },
+  { name: "Epic Journey",  action: 8, comedy: 2, duration: 3 },
+  { name: "Family Flick",  action: 4, comedy: 6, duration: 2 },
+  { name: "Secret Gem",    action: 6, comedy: 5, duration: 2 },
+  { name: "Comedy Riot",   action: 1, comedy: 8, duration: 1 },
+  { name: "Mixed Genres",  action: 5, comedy: 5, duration: 3 }
+];
+
+// ============================
+// 3) RENDER & RUN INFERENCE
+// ============================
+function runInference() {
+  // Container to display cards
+  const container = document.getElementById('moviesContainer');
+  container.innerHTML = ""; // Clear existing
+
+  // For each movie, compute a score, then display
+  movies.forEach(movie => {
+    let score = forwardPass(movie.action, movie.comedy, movie.duration);
+    let card = createMovieCard(movie, score);
+    container.appendChild(card);
+  });
+}
+
+function createMovieCard(movie, score) {
+  let card = document.createElement('div');
+  card.className = "movie-card";
+
+  // Title
+  let titleEl = document.createElement('div');
+  titleEl.className = "movie-title";
+  titleEl.textContent = movie.name;
+
+  // Attributes
+  let attributesEl = document.createElement('div');
+  attributesEl.className = "movie-attributes";
+  attributesEl.innerHTML = `
+    Action: ${movie.action}<br>
+    Comedy: ${movie.comedy}<br>
+    Duration: ${movie.duration}h
+  `;
+
+  // Score
+  let scoreEl = document.createElement('div');
+  scoreEl.className = "movie-score";
+  scoreEl.textContent = "Score: " + score.toFixed(2);
+
+  card.appendChild(titleEl);
+  card.appendChild(attributesEl);
+  card.appendChild(scoreEl);
+
+  return card;
+}
+
+// On page load, run once
+window.addEventListener('load', runInference);
+</script>
+
+</body>
+</html>

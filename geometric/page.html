@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Movie Preference Perceptron</h2>
+    <div class="controls">
+      <button onclick="trainStep()">Train Step</button>
+      <button onclick="reset()">Reset</button>
+      <span id="epoch">Epoch: 0</span>
+    </div>
+    <canvas id="plot" width="600" height="400"></canvas>
+    <div class="stats">
+      <div id="weights">Weights: w1=0.1, w2=0.1, bias=0</div>
+    </div>
+    <div>
+      <p>• Blue dots: Movies you like</p>
+      <p>• Orange dots: Movies you don't like</p>
+      <p>• Green line: Decision boundary</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
